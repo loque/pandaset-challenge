@@ -1,8 +1,9 @@
 import { useState, useCallback } from "react";
 import useSWR, { Fetcher } from "swr";
-import { Cuboid } from "../types";
+import { Cuboid, Point } from "../types";
 
 interface Data {
+  points: Point[];
   cuboids: Cuboid[];
 }
 

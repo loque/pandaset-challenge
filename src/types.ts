@@ -1,3 +1,4 @@
+export type Point = [x: number, y: number, z: number];
 export interface Cuboid {
   uuid: string;
   label: string;
