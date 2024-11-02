@@ -1,7 +1,7 @@
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import { useEffect, useRef } from "react";
-import { InstancedMesh, Object3D } from "three";
+import { InstancedMesh, Object3D, Vector3 } from "three";
 
 const cuboids = [
   {
@@ -86,6 +86,7 @@ export function App() {
         c["dimensions.y"],
         c["dimensions.z"]
       );
+      tempObject.rotateOnAxis(new Vector3(0, 1, 1), c.yaw);
       tempObject.updateMatrix();
       meshRef.current.setMatrixAt(i, tempObject.matrix);
     }
