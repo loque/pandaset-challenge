@@ -1,33 +1,11 @@
 import { Canvas, extend, Object3DNode } from "@react-three/fiber";
 import { OrbitControls, shaderMaterial } from "@react-three/drei";
-import { useLayoutEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef } from "react";
 import * as THREE from "three";
 
-import data from "./frame_00.json";
-
-interface Cuboid {
-  uuid: string;
-  label: string;
-  yaw: number;
-  stationary: boolean;
-  camera_used: number;
-  "position.x": number;
-  "position.y": number;
-  "position.z": number;
-  "dimensions.x": number;
-  "dimensions.y": number;
-  "dimensions.z": number;
-  "cuboids.sibling_id": string;
-  "cuboids.sensor_id": number;
-}
-
-interface Data {
-  cuboids: Cuboid[];
-}
-
-const typedData = data as Data;
-
-const cuboids = typedData.cuboids;
+import { FrameControls } from "./FrameControls/FrameControls";
+import { useDataFrame } from "./hooks/useDataFrame";
+import { Cuboid } from "./types";
 
 const MeshEdgesMaterial = shaderMaterial(
   {
@@ -66,13 +44,13 @@ declare global {
   }
 }
 
-export function App() {
+function Scene({ cuboids }: { cuboids: Cuboid[] }) {
   const solidMeshRef = useRef<THREE.InstancedMesh>();
   const wireframeMeshRef = useRef<THREE.InstancedMesh>();
   const tempObject = new THREE.Object3D();
 
   useLayoutEffect(() => {
-    if (!solidMeshRef.current) return;
+    if (!solidMeshRef.current || !wireframeMeshRef.current || !cuboids) return;
 
     for (let i = 0; i < cuboids.length; i++) {
       const c = cuboids[i];
@@ -93,7 +71,43 @@ export function App() {
     }
     solidMeshRef.current.instanceMatrix.needsUpdate = true;
     wireframeMeshRef.current.instanceMatrix.needsUpdate = true;
-  }, []);
+  }, [cuboids]);
+
+  return (
+    <group>
+      <instancedMesh ref={solidMeshRef} args={[null, null, cuboids.length]}>
+        <boxGeometry />
+        <meshPhongMaterial color="orange" transparent opacity={0.2} />
+      </instancedMesh>
+      <instancedMesh ref={wireframeMeshRef} args={[null, null, cuboids.length]}>
+        <boxGeometry />
+        <meshEdgesMaterial
+          transparent
+          polygonOffset
+          polygonOffsetFactor={-10}
+          color="black"
+          thickness={0.01}
+          smoothness={0.005}
+        />
+      </instancedMesh>
+    </group>
+  );
+}
+
+export function App() {
+  const { data, isLoading, currentFrame, goToPrevious, goToNext, goTo } =
+    useDataFrame();
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") goToPrevious();
+      if (e.key === "ArrowRight") goToNext();
+    };
+
+    window.addEventListener("keydown", handleKeyPress);
+    return () => window.removeEventListener("keydown", handleKeyPress);
+  }, [currentFrame]);
 
   return (
     <>
@@ -108,28 +122,15 @@ export function App() {
         />
         <pointLight position={[-10, -10, -10]} decay={0} intensity={Math.PI} />
         <OrbitControls />
-
-        <group>
-          <instancedMesh ref={solidMeshRef} args={[null, null, cuboids.length]}>
-            <boxGeometry />
-            <meshPhongMaterial color="orange" transparent opacity={0.2} />
-          </instancedMesh>
-          <instancedMesh
-            ref={wireframeMeshRef}
-            args={[null, null, cuboids.length]}
-          >
-            <boxGeometry />
-            <meshEdgesMaterial
-              transparent
-              polygonOffset
-              polygonOffsetFactor={-10}
-              color="black"
-              thickness={0.01}
-              smoothness={0.005}
-            />
-          </instancedMesh>
-        </group>
+        {data && <Scene cuboids={data.cuboids} />}
       </Canvas>
+      <FrameControls
+        currentFrame={currentFrame}
+        isLoading={isLoading}
+        onPrevious={goToPrevious}
+        onNext={goToNext}
+        onFrameChange={goTo}
+      />
     </>
   );
 }

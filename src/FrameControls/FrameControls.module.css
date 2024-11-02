@@ -1,0 +1,38 @@
+.frameControls {
+  position: absolute;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.75);
+  color: white;
+  padding: 1rem;
+  border-radius: 0.25rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.button {
+  padding: 0.5rem 1rem;
+  background-color: #3b82f6;
+  border-radius: 0.25rem;
+}
+
+.button:disabled {
+  background-color: #6b7280;
+  cursor: not-allowed;
+}
+
+.rangeWrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.rangeInput {
+  width: 12rem;
+}
+
+.rangeLabel {
+  font-size: 0.875rem;
+}
