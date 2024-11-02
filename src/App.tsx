@@ -23,6 +23,7 @@ export function App() {
   return (
     <>
       <Canvas camera={{ position: [100, 100, 100], fov: 50 }}>
+        <color attach="background" args={["black"]} />
         <ambientLight intensity={Math.PI / 2} />
         <spotLight
           position={[10, 10, 10]}

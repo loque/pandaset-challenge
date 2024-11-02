@@ -1,4 +1,4 @@
-import { useRef, useLayoutEffect } from "react";
+import { useRef, useLayoutEffect, useMemo, useCallback } from "react";
 import * as THREE from "three";
 import { shaderMaterial } from "@react-three/drei";
 import { extend, Object3DNode } from "@react-three/fiber";
@@ -48,21 +48,65 @@ interface SceneProps {
 
 const tmpCuboid = new THREE.Object3D();
 const tmpPoint = new THREE.Object3D();
+const tmpColor = new THREE.Color();
+
+const colors = [
+  new THREE.Color("white"),
+  new THREE.Color("#e6ffe6"),
+  new THREE.Color("#ccffcc"),
+  new THREE.Color("#b3ffb3"),
+  new THREE.Color("#99ff99"),
+  new THREE.Color("#80ff80"),
+  new THREE.Color("#66ff66"),
+  new THREE.Color("#4dff4d"),
+  new THREE.Color("#33ff33"),
+  new THREE.Color("green"),
+];
 
 export function Scene({ points, cuboids }: SceneProps) {
   const pointsMeshRef = useRef<THREE.InstancedMesh>();
   const solidMeshRef = useRef<THREE.InstancedMesh>();
   const wireframeMeshRef = useRef<THREE.InstancedMesh>();
 
+  const stats = useMemo(() => {
+    let min = Infinity;
+    let max = -Infinity;
+    points.forEach(([_x, _y, z]) => {
+      if (z < min) min = z;
+      if (z > max) max = z;
+    });
+    const range = Math.abs(max - min);
+    return { min, max, range };
+  }, [points]);
+
+  const getColorIndex = useCallback(
+    (z: number) => {
+      const colorsCount = colors.length;
+      const stepLen = stats.range / colorsCount;
+
+      // Calculate the step index
+      let colorIndex = Math.floor((z - stats.min) / stepLen);
+
+      // Ensure stepIndex is within bounds
+      if (colorIndex >= colorsCount) colorIndex = colorsCount - 1;
+
+      return colorIndex;
+    },
+    [points, stats]
+  );
+
+  const colorArray = useMemo(
+    () =>
+      Float32Array.from(
+        new Array(points.length)
+          .fill(0)
+          .flatMap((_, i) => tmpColor.set(colors[i]).toArray())
+      ),
+    [points]
+  );
+
   useLayoutEffect(() => {
-    if (
-      !pointsMeshRef.current ||
-      !solidMeshRef.current ||
-      !wireframeMeshRef.current ||
-      !cuboids ||
-      !points
-    )
-      return;
+    if (!solidMeshRef.current || !wireframeMeshRef.current || !cuboids) return;
 
     for (let i = 0; i < cuboids.length; i++) {
       const c = cuboids[i];
@@ -79,15 +123,26 @@ export function Scene({ points, cuboids }: SceneProps) {
     }
     solidMeshRef.current.instanceMatrix.needsUpdate = true;
     wireframeMeshRef.current.instanceMatrix.needsUpdate = true;
+  }),
+    [cuboids];
+
+  useLayoutEffect(() => {
+    if (!pointsMeshRef.current || !points) return;
 
     for (let i = 0; i < points.length; i++) {
-      tmpPoint.position.set(points[i][0], points[i][1], points[i][2]);
+      const [x, y, z] = points[i];
+      tmpPoint.position.set(x, y, z);
       tmpPoint.scale.set(0.1, 0.1, 0.1);
       tmpPoint.updateMatrix();
       pointsMeshRef.current.setMatrixAt(i, tmpPoint.matrix);
+
+      const colorIndex = getColorIndex(z);
+      const color = colors[colorIndex];
+
+      pointsMeshRef.current.setColorAt(i, color);
     }
-    pointsMeshRef.current.instanceMatrix.needsUpdate = true;
-  }, [cuboids]);
+    pointsMeshRef.current.instanceColor!.needsUpdate = true;
+  }, [points]);
 
   return (
     <group>
@@ -107,8 +162,13 @@ export function Scene({ points, cuboids }: SceneProps) {
         />
       </instancedMesh>
       <instancedMesh ref={pointsMeshRef} args={[null, null, points.length]}>
-        <boxGeometry />
-        <meshStandardMaterial color="white" />
+        <boxGeometry>
+          <instancedBufferAttribute
+            attach="attributes-color"
+            args={[colorArray, 3]}
+          />
+        </boxGeometry>
+        <meshBasicMaterial />
       </instancedMesh>
     </group>
   );
