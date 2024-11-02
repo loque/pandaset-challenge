@@ -86,7 +86,7 @@ export function App() {
         c["dimensions.y"],
         c["dimensions.z"]
       );
-      tempObject.rotateOnAxis(new Vector3(0, 1, 1), c.yaw);
+      tempObject.rotation.set(0, 0, c.yaw);
       tempObject.updateMatrix();
       meshRef.current.setMatrixAt(i, tempObject.matrix);
     }
