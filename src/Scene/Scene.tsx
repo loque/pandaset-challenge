@@ -51,16 +51,16 @@ const tmpPoint = new THREE.Object3D();
 const tmpColor = new THREE.Color();
 
 const colors = [
-  new THREE.Color("white"),
-  new THREE.Color("#e6ffe6"),
-  new THREE.Color("#ccffcc"),
-  new THREE.Color("#b3ffb3"),
-  new THREE.Color("#99ff99"),
-  new THREE.Color("#80ff80"),
-  new THREE.Color("#66ff66"),
-  new THREE.Color("#4dff4d"),
-  new THREE.Color("#33ff33"),
-  new THREE.Color("green"),
+  new THREE.Color("#cccfff"),
+  new THREE.Color("#b5baff"),
+  new THREE.Color("#9fa5ff"),
+  new THREE.Color("#8890ff"),
+  new THREE.Color("#717bff"),
+  new THREE.Color("#5b65ff"),
+  new THREE.Color("#4450ff"),
+  new THREE.Color("#2d3bff"),
+  new THREE.Color("#1726ff"),
+  new THREE.Color("#0011ff"),
 ];
 
 export function Scene({ points, cuboids }: SceneProps) {
@@ -132,7 +132,8 @@ export function Scene({ points, cuboids }: SceneProps) {
     for (let i = 0; i < points.length; i++) {
       const [x, y, z] = points[i];
       tmpPoint.position.set(x, y, z);
-      tmpPoint.scale.set(0.1, 0.1, 0.1);
+      const size = 0.03;
+      tmpPoint.scale.set(size, size, size);
       tmpPoint.updateMatrix();
       pointsMeshRef.current.setMatrixAt(i, tmpPoint.matrix);
 
@@ -148,7 +149,7 @@ export function Scene({ points, cuboids }: SceneProps) {
     <group>
       <instancedMesh ref={solidMeshRef} args={[null, null, cuboids.length]}>
         <boxGeometry />
-        <meshPhongMaterial color="orange" transparent opacity={0.2} />
+        <meshPhongMaterial color="#66ff66" transparent opacity={0.2} />
       </instancedMesh>
       <instancedMesh ref={wireframeMeshRef} args={[null, null, cuboids.length]}>
         <boxGeometry />
@@ -156,8 +157,8 @@ export function Scene({ points, cuboids }: SceneProps) {
           transparent
           polygonOffset
           polygonOffsetFactor={-10}
-          color="black"
-          thickness={0.01}
+          color="#66ff66"
+          thickness={0.02}
           smoothness={0.005}
         />
       </instancedMesh>
