@@ -11,12 +11,15 @@ const MeshEdgesMaterial = shaderMaterial(
     thickness: 0.01,
     smoothness: 0.2,
   },
-  /*glsl*/ `varying vec3 vPosition;
+  /*glsl*/ `
+  varying vec3 vPosition;
   void main() {
     vPosition = position;
-    gl_Position = projectionMatrix * viewMatrix * instanceMatrix * vec4(position, 1.0);
+    vec4 mvPosition = modelMatrix * instanceMatrix * vec4(position, 1.0);
+    gl_Position = projectionMatrix * viewMatrix * mvPosition;
   }`,
-  /*glsl*/ `varying vec3 vPosition;
+  /*glsl*/ `
+  varying vec3 vPosition;
   uniform vec3 size;
   uniform vec3 color;
   uniform float thickness;
