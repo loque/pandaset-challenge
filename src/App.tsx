@@ -5,6 +5,7 @@ import { useDataFrame } from "./hooks/useDataFrame";
 import { Scene } from "./Scene/Scene";
 import { Tooltip } from "./Tooltip/Tooltip";
 import { useState } from "react";
+import { Help } from "./Help/Help";
 
 export function App() {
   const { data, isLoading, currentFrame, goToPrevious, goToNext, goTo } =
@@ -47,6 +48,7 @@ export function App() {
         onFrameChange={goTo}
       />
       <Tooltip content={tooltipContent} />
+      <Help />
     </>
   );
 }
