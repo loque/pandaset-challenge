@@ -1,5 +1,5 @@
 import { Cuboid } from "../types";
-import classes from "./Tooltip.module.css";
+import * as classes from "./Tooltip.module.css";
 
 interface TooltipProps {
   content?: Cuboid;

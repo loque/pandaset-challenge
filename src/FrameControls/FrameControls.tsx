@@ -1,4 +1,4 @@
-import classes from "./FrameControls.module.css";
+import * as classes from "./FrameControls.module.css";
 
 interface FrameControlsProps {
   currentFrame: number;
@@ -25,9 +25,7 @@ export function FrameControls({
         Previous
       </button>
       <div className={classes.rangeWrapper}>
-        <span className={classes.rangeLabel}>
-          {currentFrame.toString().padStart(2, "0")}/49
-        </span>
+        <span>{currentFrame.toString().padStart(2, "0")}/49</span>
         <input
           type="range"
           min="0"

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import classes from "./Help.module.css";
+import * as classes from "./Help.module.css";
 
 export function Help() {
   const [showHelp, setShowHelp] = useState(false);
