@@ -11,9 +11,10 @@ const ROTATION_SPEED = 0.01;
 interface SceneProps {
   points: Point[];
   cuboids: Cuboid[];
+  onCuboidHover?: (idx: number) => void;
 }
 
-export function Scene({ points, cuboids }: SceneProps) {
+export function Scene({ points, cuboids, onCuboidHover }: SceneProps) {
   const { camera } = useThree();
   const requestId = useRef<number>();
 
@@ -90,7 +91,7 @@ export function Scene({ points, cuboids }: SceneProps) {
 
   return (
     <group position={[5, 0, 0]} rotation={[-1, 0, 0.8]}>
-      <Cuboids cuboids={cuboids} />
+      <Cuboids cuboids={cuboids} onHover={onCuboidHover} />
       <Points points={points} />
     </group>
   );

@@ -3,10 +3,10 @@
   bottom: 1rem;
   left: 50%;
   transform: translateX(-50%);
-  background-color: rgba(0, 0, 0, 0.75);
+  background-color: rgba(10, 10, 10, 0.8);
   color: white;
   padding: 1rem;
-  border-radius: 0.25rem;
+  border-radius: 0.5rem;
   display: flex;
   align-items: self-end;
   gap: 1rem;
@@ -15,7 +15,7 @@
 .button {
   padding: 0.5rem 1rem;
   background-color: #3b82f6;
-  border-radius: 0.25rem;
+  border-radius: 0.5rem;
   border: 1px solid #3b82f6;
   color: white;
   text-transform: uppercase;
@@ -38,6 +38,4 @@
 }
 
 .rangeLabel {
-  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
-    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
 }

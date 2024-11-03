@@ -1,6 +1,6 @@
-import { shaderMaterial } from "@react-three/drei";
+import { Html, shaderMaterial } from "@react-three/drei";
 import { extend, Object3DNode } from "@react-three/fiber";
-import { useRef, useLayoutEffect } from "react";
+import { useRef, useLayoutEffect, useState } from "react";
 import * as THREE from "three";
 import { Cuboid } from "../types";
 
@@ -55,9 +55,10 @@ const tmpCuboid = new THREE.Object3D();
 
 interface CuboidsProps {
   cuboids: Cuboid[];
+  onHover: (idx: number) => void;
 }
 
-export function Cuboids({ cuboids }: CuboidsProps) {
+export function Cuboids({ cuboids, onHover }: CuboidsProps) {
   const solidMeshRef = useRef<THREE.InstancedMesh>();
   const wireframeMeshRef = useRef<THREE.InstancedMesh>();
 
@@ -83,7 +84,18 @@ export function Cuboids({ cuboids }: CuboidsProps) {
 
   return (
     <>
-      <instancedMesh ref={solidMeshRef} args={[null, null, cuboids.length]}>
+      <instancedMesh
+        ref={solidMeshRef}
+        args={[null, null, cuboids.length]}
+        onPointerMove={(e) => {
+          e.stopPropagation();
+          onHover(e.instanceId);
+        }}
+        onPointerOut={(e) => {
+          e.stopPropagation();
+          onHover(undefined);
+        }}
+      >
         <boxGeometry />
         <meshPhongMaterial color="#66ff66" transparent opacity={0.2} />
       </instancedMesh>
