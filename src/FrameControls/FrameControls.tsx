@@ -25,6 +25,9 @@ export function FrameControls({
         Previous
       </button>
       <div className={classes.rangeWrapper}>
+        <span className={classes.rangeLabel}>
+          {currentFrame.toString().padStart(2, "0")}/49
+        </span>
         <input
           type="range"
           min="0"
@@ -34,9 +37,6 @@ export function FrameControls({
           disabled={isLoading}
           className={classes.rangeInput}
         />
-        <span className={classes.rangeLabel}>
-          Frame: {currentFrame.toString().padStart(2, "0")}/49
-        </span>
       </div>
       <button
         onClick={onNext}

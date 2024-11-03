@@ -8,7 +8,7 @@
   padding: 1rem;
   border-radius: 0.25rem;
   display: flex;
-  align-items: center;
+  align-items: self-end;
   gap: 1rem;
 }
 
@@ -16,23 +16,28 @@
   padding: 0.5rem 1rem;
   background-color: #3b82f6;
   border-radius: 0.25rem;
+  border: 1px solid #3b82f6;
+  color: white;
+  text-transform: uppercase;
 }
 
 .button:disabled {
-  background-color: #6b7280;
   cursor: not-allowed;
+  filter: brightness(60%);
 }
 
 .rangeWrapper {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  flex-direction: column;
 }
 
 .rangeInput {
-  width: 12rem;
+  width: 20rem;
 }
 
 .rangeLabel {
-  font-size: 0.875rem;
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
 }
